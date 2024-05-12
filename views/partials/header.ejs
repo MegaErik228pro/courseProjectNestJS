@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/Delivery.styles.css" asp-append-version="true" />
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/js/Header.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/site.js" asp-append-version="true"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/company">Delivery</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+                    <ul class="navbar-nav flex-grow-1" id="nonAuth">
+
+                        <!-- ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕ АВТОРИЗОВАН -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/auth/login">Войти</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/auth/register">Регистрация</a>
+                        </li>
+                    
+                    </ul>
+                            
+                    <ul class="navbar-nav flex-grow-1" id="admin">
+
+                        <!-- ЕСЛИ ПОЛЬЗОВАТЕЛЬ АДМИН -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/company/admin">Управление</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Orders">Заказы</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="History">История</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/user/admin">Аккаунты</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/user/me">Профиль</a>
+                        </li>
+
+                    </ul>
+                                
+                    <ul class="navbar-nav flex-grow-1" id="cAdmin">
+
+                        <!-- ЕСЛИ ПОЛЬЗОВАТЕЛЬ АДМИН КОМПАНИИ -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" id="caManagmentLink" href="#" >Управление</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="CompanyAdmin" asp-action="Orders">Заказы</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="CompanyAdmin" asp-action="History">История</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/user/me">Профиль</a>
+                        </li>
+
+                    </ul>
+                            
+                    <ul class="navbar-nav flex-grow-1" id="user">
+
+                        <!-- ЕСЛИ ПОЛЬЗОВАТЕЛЬ ЮЗЕР -->
+                        <li class="nav-item" class="user">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Мои заказы</a>
+                        </li>
+                        <li class="nav-item" class="user">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">Корзина</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/user/me">Профиль</a>
+                        </li>
+                        
+                    </ul>   
+                    </ul>
+                </div>
+            </div>
+            <a id="adminBar" style="width: 200px;text-align: right;margin-right: 15px;color: blue;font-weight: 500;">ADMIN</a>
+            <a id="cAdminBar" style="width: 200px;text-align: right;margin-right: 15px;color: blue;font-weight: 500;">COMPANY ADMIN</a>
+        </nav>
+    </header>
+
+    <script>
+        async function getCurrentUser() {
+          try {
+            const response = await fetch('http://localhost:8000/', {
+              method: 'POST',
+              credentials: 'same-origin',
+            });
+            
+            if (!response.ok) {
+              throw new Error('Ошибка при выполнении запроса');
+            }
+        
+            const data = await response.json();
+            console.log(data);
+            return data;
+
+          } catch (error) {
+            return 'un';
+          }
+        }
+        
+            getCurrentUser().then(role => {
+            const nonAuth = document.getElementById('nonAuth');
+            const admin = document.getElementById('admin');
+            const cAdmin = document.getElementById('cAdmin');
+            const user = document.getElementById('user');
+            const abar = document.getElementById('adminBar');
+            const cabar = document.getElementById('cAdminBar');
+            const caManagmentLink = document.getElementById('caManagmentLink');
+        
+            console.log('Роль: ', role.role);
+            console.log('Ключ: ', role.key);
+            switch (role.role) {
+                case 'user':
+                    user.style.display = 'flex';
+                    admin.style.display = 'none';
+                    cAdmin.style.display = 'none';
+                    nonAuth.style.display = 'none';
+                    abar.style.display = 'none';
+                    cabar.style.display = 'none';
+                    break;
+                case 'admin':
+                    user.style.display = 'none';
+                    admin.style.display = 'flex';
+                    cAdmin.style.display = 'none';
+                    nonAuth.style.display = 'none';   
+                    abar.style.display = 'flex';
+                    cabar.style.display = 'none';   
+                    break;
+                case 'companyAdmin':
+                    user.style.display = 'none';
+                    admin.style.display = 'none';
+                    cAdmin.style.display = 'flex';
+                    nonAuth.style.display = 'none';
+                    abar.style.display = 'none';
+                    cabar.style.display = 'flex';
+                    cabar.textContent = 'COMPANY ADMIN KEY: ' + role.key;
+                    const link = '/company/' + role.key + '/admin';
+                    caManagmentLink.setAttribute('href', link);
+                    break;
+                default:
+                    user.style.display = 'none';
+                    admin.style.display = 'none';
+                    cAdmin.style.display = 'none';
+                    nonAuth.style.display = 'flex';
+                    abar.style.display = 'none';
+                    cabar.style.display = 'none';
+                break;
+            }
+        })
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+    <title>Аккаунты</title>
+    <meta charset="utf-8" />
+        <style>
+        .b:hover{
+        border: #724caf solid 2px;
+        color: #724caf;
+        } 
+    </style>
+</head>
+<%- include('../../partials/header.ejs') %>
+<body>
+    <div class="container">
+        <h2>Все аккаунты</h2>
+        <table class="table">
+            <tr><th>ID</th><th>Имя</th><th>Номер телефона</th><th>Адрес</th><th>Почта</th><th>Права</th><th>Компания (ключ)</th><th></th><th></th></tr>
+        <% users.forEach(function (item) { %>
+            <tr>
+                <td><%= item.IDUser %></td>
+                <td><%= item.Name %></td>
+                <td><%= item.PhoneNo %></td>
+                <td><%= item.Address %></td>
+                <td><%= item.Email %></td>
+                <form action="admin/updateRights/<%= item.IDUser %>" method="post">
+                <% if (item.Role == 'user') { %>
+                    <td>
+                            <select name="role">
+                                <option value="user" selected>Пользователь</option>
+                                <option value="companyAdmin">Администратор компании</option>
+                            </select>
+                    </td>
+                    <td>-</td>
+                <% } else { %>
+                    <td>
+                        <select name="role">
+                            <option value="user">Пользователь</option>
+                            <option value="companyAdmin" selected>Администратор компании</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <select name="key">
+                            <% companies.forEach(function(comp) { %>
+                                <% if (comp.IDCompany == item.AdminKey) { %>
+                                    <option value="<%= comp.IDCompany %>" selected><%= comp.Name %><span style="color: blue;"> (KEY <%= comp.IDCompany %>)</span></option>
+                                <% } else { %>
+                                    <option value="<%= comp.IDCompany %>"><%= comp.Name %><span style="color: blue;"> (KEY <%= comp.IDCompany %>)</span></option>
+                                <% } %>
+                            <% }); %>
+                        </select>
+                    </td>
+                <% } %>
+
+                <td><button type="submit" style="background: green;border-radius: 10px;width: 100%;color: white;">Изменить</button></td>
+                </form>
+                <td><form action="admin/delete/<%= item.IDUser %>" method="post"><button type="submit" style="background: red;border-radius: 10px;width: 100%;color: white;">Удалить</button></form></td>
+            </tr>
+        <% }); %>
+    </table>
+</div>
+</body>
+<%- include('../../partials/footer.ejs') %>
+</html>

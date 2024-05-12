@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Allergen {
+  IDAllergen Int    @id(map: "PK__Allergen__0ABFB0BE0847B9BF")
+  Name       String @db.NVarChar(50)
+}
+
+model Category {
+  IDCategory Int       @id(map: "PK__Category__1AA1EC66672F31B1") @default(autoincrement())
+  Name       String    @db.NVarChar(50)
+  IDCompany  Int
+  Company    Company   @relation(fields: [IDCompany], references: [IDCompany], onDelete: Cascade, onUpdate: NoAction, map: "FK__Category__IDComp__151B244E")
+  Product    Product[]
+}
+
+model Company {
+  IDCompany Int        @id(map: "PK__Company__9A030B765B162046") @default(autoincrement())
+  Name      String     @db.NVarChar(50)
+  ImagePath String     @db.NVarChar(150)
+  Category  Category[]
+  Order     Order[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model History {
+  IDOrder       Int
+  User          String   @db.NVarChar(50)
+  Company       String   @db.NVarChar(50)
+  OrderDate     DateTime @db.DateTime
+  Status        String   @db.NVarChar(50)
+  PaymentMethod String   @db.NVarChar(50)
+  TotalPrice    Decimal  @db.Decimal(8, 2)
+  Products      String?  @db.NVarChar(300)
+
+  @@ignore
+}
+
+model Order {
+  IDOrder       Int      @id(map: "PK__Order__5CBBCADB4457D655") @default(autoincrement())
+  IDUser        Int
+  IDCompany     Int
+  OrderDate     DateTime @db.DateTime
+  Status        String   @db.NVarChar(50)
+  PaymentMethod String   @db.NVarChar(50)
+  TotalPrice    Decimal  @db.Decimal(8, 2)
+  Products      String?  @db.NVarChar(300)
+  Company       Company  @relation(fields: [IDCompany], references: [IDCompany], onUpdate: NoAction, map: "FK__Order__IDCompany__336AA144")
+  User          User     @relation(fields: [IDUser], references: [IDUser], onUpdate: NoAction, map: "FK__Order__IDUser__32767D0B")
+}
+
+model Product {
+  IDProduct   Int      @id(map: "PK__Product__4290D1793A75BFC0") @default(autoincrement())
+  Name        String   @db.NVarChar(30)
+  ImagePath   String   @db.NVarChar(100)
+  Description String   @db.NText
+  Price       Decimal  @db.Decimal(8, 2)
+  IDCategory  Int
+  Gram        Int
+  Allergens   String?  @db.NVarChar(50)
+  Category    Category @relation(fields: [IDCategory], references: [IDCategory], onDelete: Cascade, onUpdate: NoAction, map: "FK__Product__IDCateg__17F790F9")
+}
+
+model sysdiagrams {
+  name         String @db.NVarChar(128)
+  principal_id Int
+  diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B613389EC9C") @default(autoincrement())
+  version      Int?
+  definition   Bytes?
+
+  @@unique([principal_id, name], map: "UK_principal_name")
+}
+
+model User {
+  IDUser   Int     @id(map: "PK__User__EAE6D9DF46AD9C87") @default(autoincrement())
+  Name     String  @db.NVarChar(50)
+  PhoneNo  String  @db.NVarChar(50)
+  Address  String  @db.NVarChar(50)
+  Email    String  @unique(map: "UQ__User__A9D10534C1C57B99") @db.NVarChar(50)
+  Password String  @db.NVarChar(500)
+  Role     String  @db.NVarChar(50)
+  AdminKey Int?
+  Order    Order[]
+}

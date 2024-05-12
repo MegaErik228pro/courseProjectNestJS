@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <title>Company</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/auth.css" asp-append-version="true" />
+</head>
+<%- include('../../partials/header.ejs') %>
+<body>
+      <form action="/company/updateCompany/<%= company.IDCompany %>" method="post">
+      <div class="container">
+        <h1>Изменить компанию</h1>
+        <hr>
+
+        <label for="email"><b>Идентификатор: <%= company.IDCompany %></b></label>
+        <hr>
+
+        <label for="name"><b>Название</b></label>
+        <input type="text" placeholder="KFC" name="name" required value="<%= company.Name %>">
+
+        <label for="path"><b>Путь к файлу</b></label>
+        <input type="text" placeholder="http://path.jpeg" name="path" required value="<%= company.ImagePath %>">
+
+      </div>
+      <button type="submit" class="registerbtn">Изменить</button>
+      </form>
+</body>
+<%- include('../../partials/footer.ejs') %>
+</html>

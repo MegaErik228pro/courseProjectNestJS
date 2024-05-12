@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+<head>
+    <title>Delivery</title>
+    <meta charset="utf-8" />
+    <style>
+        button:hover{
+            border: #724caf solid 2px;
+            color: #724caf;
+        } 
+        .compItem{
+            width: 200px;height: 230px;position: absolute;
+        }
+        .compItem:hover{
+            cursor: pointer;
+        }
+        .redb:hover{
+            border: red solid 2px;
+            color: red;
+        }
+        .close {
+            float: right;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #000;
+            text-shadow: 0 1px 0 #fff;
+            opacity: .5;
+            border: none;
+            background-color: white;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+            opacity: .75;
+            border: none;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<%- include('../partials/header.ejs') %>
+<body>
+    <div class="container">
+        <div style="display: flex;align-content: center;align-items: center;justify-content: space-between;">
+            <!-- ФОН -->
+            <div style="filter: blur(0.5px) contrast(0.5);position: absolute;background-image: url('<%= company.ImagePath %>');background-position: center;background-size: cover;background-repeat: no-repeat;width: 100%;height: 50px;z-index: -1;left: 0;"></div>
+            <h2 style="color: white;"><%= company.Name %></h2>
+
+            <div style="display: flex;">
+                <form style="display: flex;margin-right: 10px;" action="" method="get">
+                    <svg style="width: 20px;margin-right: 5px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Layer_60" data-name="Layer 60"><path d="m12 1a11 11 0 1 0 11 11 11 11 0 0 0 -11-11zm0 18a1 1 0 0 1 -1-1 1 1 0 0 1 2 0 1 1 0 0 1 -1 1zm1.53-6.3a.94.94 0 0 0 -.53.89v.41a1 1 0 0 1 -2 0v-.42a2.91 2.91 0 0 1 1.76-2.73 2 2 0 1 0 -2.76-1.85 1 1 0 0 1 -2 0 4 4 0 0 1 4.72-3.94 4 4 0 0 1 3.22 3.22 4 4 0 0 1 -2.41 4.41z" fill="white"/>
+                    <title>
+                        <title>Формат запроса:</title>
+                        <title>1 - Орехи</title>
+                        <title>2 - Молоко</title>
+                        <title>3 - Яйца</title>
+                        <title>4 - Рыба</title>
+                        <title>5 - Пшеница</title>
+                        <title>6 - Соя</title>
+                        <title>7 - Грибы</title>
+                        <title>8 - Цитрусовые</title>
+                        <title>Пример: 158</title>
+                    </title>
+                    </g>
+                    </svg>
+                    <input style="border-radius: 10px;padding-left: 5px;width: 100px;margin-right: 5px;" type="text" placeholder="Allergen" name="allergen" value="<%= searchAllergen %>">
+                    <input style="border-radius: 10px;padding-left: 5px;width: 300px;margin-right: 5px;" type="text" placeholder="Wok" name="product" value="<%= searchProduct %>">
+                    <button style="border-radius: 10px;font-weight: 500;background-color: white;width: 100px;" type="submit" class="registerbtn">Поиск</button>
+                </form>
+            </div>
+        </div>
+        <div style="display: flex;justify-content: space-between;flex-wrap: wrap;flex-direction: column;">
+        <% company.Category.forEach(function(item) { %>
+            <% if (item.Product.length != 0) { %>
+                <div style="margin-top: 10px;">
+                <h3><%= item.Name %></h3>
+                <div style="display: flex;flex-direction: row;flex-wrap: wrap;margin-bottom: 5px;">
+                <% item.Product.forEach(function(prod) { %>
+                    <% InCart = false; %>
+
+                    <!-- МОДАЛЬНОЕ ОКНО -->
+                    <div id="modDialog" class="modal fade" style="display: none; justify-content: center; align-items: center;text-align: -webkit-center;" >
+                        <div id="dialogContent" class="modal-dialog"></div>
+                        <div class="modal-content" style="width: 80%;">
+                            <div class="modal-header" style="display: flex;justify-content: flex-end;height: 30px;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div style="height: fit-content;display: flex;flex-direction: column;align-content: center;margin-bottom: 10px;justify-content: space-between;">
+                                        <div style="display: flex;">
+                                            <img id="Mpath" style="border-radius: 10px;width: 180px;margin-top: 10px;margin-bottom: 10px;height: 150px;" src="#"/>
+                                            <div style="display: flex; flex-direction: column; align-items: flex-start; align-content: center; justify-content: flex-start;">
+                                                <a style="display: flex;width: 500px;margin-left: 20px;font-size: 24px;font-weight: 500;margin-top: 3px;" id="Mname">#</a>
+                                                <div style="display: flex;align-items: flex-start;justify-content: space-between;flex-direction: column;padding-left: 10px;padding-right: 10px;font-size: 14px;font-weight: 500;color: #7a7a7a;margin-bottom: 5px;margin-left: 10px;">
+                                                    <a style="color: black;font-weight: 500;font-size: 18px;" id="Mprice">#</a>
+                                                    <a id="Mgram">#</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex;flex-direction: column;align-items: flex-start;">
+                                            <a style="color: black;font-weight: 500;font-size: 18px;">Состав:</a>
+                                            <a style="color: black;font-weight: 400;font-size: 16px;text-align: left;" id="Mdesc">#</a>
+                                            <a style="color: black;font-weight: 500;font-size: 18px;">Аллергены:</a>
+                                            <a style="color: black;font-weight: 400;font-size: 16px;" id="Mallerg">#</a>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgb(239 239 239);border-radius: 10px;width: 200px;height: fit-content;display: flex;flex-direction: column;align-content: center;align-items: center;margin-right: 13px;">
+                        <!-- AJAX -->
+                        <a href="/company/<%= company.IDCompany %>/getProduct/<%= prod.IDProduct %>" class="compItem"></a>
+
+                        <img style="border-radius: 10px;width: 180px;margin-top: 10px;" src= <%= prod.ImagePath %> />
+                        <a style="display: flex;width: 200px;margin-left: 20px;font-size: 18px;font-weight: 500;margin-top: 3px;"><%= prod.Name %></a>
+                        <div style="display: flex;justify-content: space-between;width: 200px;flex-direction: row;padding-left: 10px;padding-right: 10px;font-size: 14px;font-weight: 500;color: #7a7a7a;margin-bottom: 5px;">
+                            <a><%= prod.Gram %>г</a>
+                            <a><%= prod.Price %> BYN</a>
+                        </div>
+                    </div>
+                <% }); %>
+                </div>
+                </div>
+            <% } %>
+        <% }); %>
+
+        </div>
+        
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $.ajaxSetup({ cache: false });
+        $(".compItem").click(function (e) {
+                e.preventDefault();
+                $.get(this.href, async function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
+                    await fillModalWithData(data.product);
+                });
+            });
+        });
+        function fillModalWithData(product) {
+            console.log(product);
+            document.getElementById('Mpath').src = product.ImagePath;
+            document.getElementById('Mname').textContent = product.Name;
+            document.getElementById('Mprice').textContent = product.Price + ' BYN';
+            document.getElementById('Mgram').textContent = product.Gram + ' г';
+            document.getElementById('Mdesc').textContent = product.Description;
+            document.getElementById('Mallerg').textContent = product.allergenString;
+        };
+        $('#modDialog').on('click', '.close', function() {
+            $('#modDialog').modal('hide');
+        });
+    </script>
+</body>
+<%- include('../partials/footer.ejs') %>
+</html>

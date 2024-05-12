@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <title>Регистрация</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/auth.css" asp-append-version="true" />
+</head>
+<%- include('../../partials/header.ejs') %>
+<body>
+    <form action="/auth/register" method="post">
+    <div class="container">
+    <h1>Регистрация</h1>
+    <hr>
+
+    <label for="name"><b>Имя</b></label>
+    <input type="text" placeholder="Ivan" name="name" required>
+
+    <label for="phoneNo"><b>Номер телефона</b></label>
+    <input type="text" placeholder="+375123456789" name="phoneNo" required>
+
+    <label for="email"><b>Почта</b></label>
+    <input type="text" placeholder="example@gmail.com" name="email" required>
+
+    <label for="password"><b>Пароль</b></label>
+    <input type="password" placeholder="password" name="password" required>
+
+    <label for="address"><b>Адрес</b></label>
+    <input type="text" placeholder="Sverdlova 3a" name="address" required>
+
+    <a style="color: red;"><%= message %></a>
+
+    <button type="submit" class="registerbtn">Зарегестрироваться</button>
+    </div>
+
+    <div class="container signin">
+    <p>Есть аккаунт? <a href="login">Войти</a>.</p>
+    </div>
+</form>
+</body>
+<%- include('../../partials/footer.ejs') %>
+</html>

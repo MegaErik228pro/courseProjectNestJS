@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <title>Company</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/auth.css" asp-append-version="true" />
+</head>
+<%- include('../../partials/header.ejs') %>
+<body>
+
+      <form action="/company/createCompany" method="post">
+      <div class="container">
+        <h1>Создать компанию</h1>
+        <hr>
+
+        <label for="name"><b>Название</b></label>
+        <input type="text" placeholder="KFC" name="name" required>
+
+        <label for="path"><b>Путь к файлу</b></label>
+        <input type="text" placeholder="http://path.jpeg" name="path" required>
+
+      </div>
+      <button type="submit" class="registerbtn">Создать</button>
+      </form>
+</body>
+<%- include('../../partials/footer.ejs') %>
+</html>

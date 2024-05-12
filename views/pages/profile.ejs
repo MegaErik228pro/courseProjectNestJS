@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+    <title>Профиль</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/auth.css" asp-append-version="true" />
+</head>
+<%- include('../partials/header.ejs') %>
+<body>
+
+<form action="/user/updateMe" method="post">
+    <div class="container">
+    <h1>Профиль</h1>
+    <hr>
+
+    <label for="email"><b>Почта: <%= usr.Email %></b></label>
+    <hr>
+
+    <label for="name"><b>Имя</b></label>
+    <input type="text" placeholder="Ivan" name="name" value="<%= usr.Name %>" required>
+
+    <label for="phoneNo"><b>Номер телефона</b></label>
+    <input type="text" placeholder="+375123456789" name="phoneNo" value="<%= usr.PhoneNo %>" required>
+
+    <label for="address"><b>Адрес</b></label>
+    <input type="text" placeholder="Sverdlova 3a" name="address" value="<%= usr.Address %>" required>
+
+    <label for="password"><b>Пароль</b></label>
+    <input type="text" placeholder="password" name="password" required>
+
+    <a style="color: red;"><%= message %></a>
+
+    <button type="submit" class="registerbtn">Изменить</button>
+    </div>
+</form>
+
+<form action="/auth/logout" method="get">
+    <button class="registerbtn">Выйти</button>
+</form>
+
+<form action="/user/deleteMe" method="post" id="delBut">
+    <button style="background-color: red;" class="registerbtn" >Удалить аккаунт</button>
+</form>
+
+<script>
+    async function getCurrentUser() {
+      try {
+        const response = await fetch('http://localhost:8000/', {
+          method: 'POST',
+          credentials: 'same-origin',
+        });
+        
+        if (!response.ok) {
+          throw new Error('Ошибка при выполнении запроса');
+        }
+    
+        const data = await response.json();
+        console.log(data);
+        return data;
+
+      } catch (error) {
+        return 'un';
+      }
+    }
+    
+        getCurrentUser().then(role => {
+        const delbut = document.getElementById('delBut');
+
+        switch (role.role) {
+            case 'user':
+                delbut.style.display = 'flex';
+                break;
+            case 'admin':
+                delbut.style.display = 'none';  
+                break;
+            case 'companyAdmin':
+                delbut.style.display = 'none'; 
+                break;
+            default:
+                delbut.style.display = 'flex'; 
+            break;
+        }
+    })
+    
+</script>
+</body>
+<%- include('../partials/footer.ejs') %>
+</html>

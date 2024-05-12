@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+    <title>DeliveryHub</title>
+    <meta charset="utf-8" />
+    <style>
+        .b:hover{
+        border: #724caf solid 2px;
+        color: #724caf;
+        } 
+        .g:hover{
+        border: green solid 2px;
+        color: green;
+        } 
+        .r:hover{
+        color: white;
+        } 
+    </style>
+</head>
+<%- include('../../partials/header.ejs') %>
+<body>
+    <div class="container">
+        <div style="display: flex;align-content: center;align-items: center;justify-content: space-between;">
+            <h2>Компании</h2>
+            <form action="" method="get">
+                <input style="border-radius: 10px;padding-left: 5px;width: 300px;" type="text" placeholder="Burger King" name="company" value="<%= search %>">
+                <button class="b" style="border-radius: 10px;font-weight: 500;background-color: white;width: 100px;" type="submit" class="registerbtn">Поиск</button>
+            </form>
+        </div>
+        <div style="display: flex;justify-content: space-between;flex-wrap: wrap;">
+        <% companies.forEach(function(item) { %>
+            <div style="display: flex;align-items: stretch;align-content: stretch;flex-direction: column;width: fit-content;margin-bottom: 10px;">
+            <a href="/company/<%= item.IDCompany %>">
+                <img style=
+                    "border-radius: 10px;
+                    width: 250px;" 
+                src=<%= item.ImagePath %>/>
+                <div style="display: flex;">
+                        <a style="font-size: 18px;font-weight: 500;margin-left: 8px; color: blue;">ID: <%= item.IDCompany %></a>
+                    <a style="font-size: 18px;font-weight: 500;margin-left: 8px;"><%= item.Name %></a>
+                </div>
+                    <div style="display: flex;justify-content: space-between;">
+                        <form action="/company/admin/updateCompany/<%= item.IDCompany %>" method="get">
+                            <button class="g" style="border-radius: 10px;font-weight: 500;background-color: white;width: 100px;" class="registerbtn">Изменить</button>
+                        </form>
+                        <form action="/company/admin/deleteCompany/<%= item.IDCompany %>" method="post">
+                            <button class="r" style="border-radius: 10px;font-weight: 500;background-color: red;width: 100px;" class="registerbtn">Удалить</button>
+                        </form>
+                    </div>
+            </a>
+            </div>
+        <% }); %>
+        </div>
+            <form action="/company/admin/createCompany" method="get" style="margin-top: 20px;">
+                <button class="g" style="border-radius: 10px;font-weight: 500;background-color: white;width: 100%; height: 50px;" class="registerbtn">Добавить компанию</button>
+            </form>
+    </div>
+</body>
+<%- include('../../partials/footer.ejs') %>
+</html>
+  
