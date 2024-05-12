@@ -39,12 +39,48 @@ export class UserController {
         return await res.redirect('/user/me');
     }
 
+    // ЗАКАЗЫ
+
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('user')
     @Get('myOrders')
     @Render('pages/order')
     async getMyOrders(@GetUser() user: User) {
         return await this.userService.getMyOrders(user);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('admin')
+    @Get('admin/orders')
+    @Render('pages/order')
+    async getAllOrders() {
+        return await this.userService.getAllOrders();
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('companyAdmin')
+    @Get('companyAdmin/orders')
+    @Render('pages/admin/order')
+    async getCompanyOrders(@GetUser() user: User) {
+        return await this.userService.getCompanyOrders(user);
+    }
+
+    // ИСТОРИЯ
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('admin')
+    @Get('admin/history')
+    @Render('pages/admin/history')
+    async getHistory() {
+        return await this.userService.getHistory();
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('companyAdmin')
+    @Get('companyAdmin/history')
+    @Render('pages/admin/history')
+    async getCompanyHistory(@GetUser() user: User) {
+        return await this.userService.getCompanyHistory(user);
     }
 
     // УПРАВЛЕНИЕ ПРОФИЛЯМИ

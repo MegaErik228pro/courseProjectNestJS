@@ -1,21 +1,19 @@
 <!doctype html>
 <html>
 <head>
-    <title><%= title %></title>
+    <title>История</title>
     <meta charset="utf-8" />
 </head>
-<%- include('../partials/header.ejs') %>
+<%- include('../../partials/header.ejs') %>
 <body>
     <div class="container">
-        <h2><%= title %></h2>
-        <% if (orders.length == 0) { %>
-            <h3>Вы ещё не оформили ни одного заказа.</h3>
-        <% } else { %>
+        <h2>История</h2>
         <table class="table">
-            <tr><th>Номер Заказа</th><th>Ресторан</th><th>Стоимость</th><th>Метод оплаты</th><th>Статус</th><th>Товары</th><th>Дата заказа</th></tr>
-        <% orders.forEach(function(item) { %>
+            <tr><th>Номер Заказа</th><th>Пользователь</th><th>Ресторан</th><th>Стоимость</th><th>Метод оплаты</th><th>Статус</th><th>Товары</th><th>Дата изменения</th></tr>
+            <% history.forEach(function(item) { %>
             <tr>
                 <td><%= item.IDOrder %></td>
+                <td><%= item.User %></td>
                 <td><%= item.Company %></td>
                 <td><%= item.TotalPrice %></td>
                 <td><%= item.PaymentMethod %></td>
@@ -35,10 +33,9 @@
                 <td><%= item.OrderDate %></td>
             </tr>
         <% }); %>
-        </table>
-        <% } %>
-        <div class="company"></div>
-    </div>
+    </table>
+</div>
 </body>
-<%- include('../partials/footer.ejs') %>
+<%- include('../../partials/footer.ejs') %>
 </html>
+    

@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+    <title>Заказы</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <h2>Все заказы</h2>
+    <table class="table">
+        <tr><th>Номер Заказа</th><th>Стоимость</th><th>Метод оплаты</th><th>Статус</th><th>Товары</th><th>Дата заказа</th><th>Пользователь</th><th></th></tr>
+        <% orders.forEach(function(item) { %>
+            <tr>
+                <td><%= item.IDOrder %></td>
+                <td><%= item.Company %></td>
+                <td><%= item.TotalPrice %></td>
+                <td><%= item.PaymentMethod %></td>
+
+            <form asp-controller="CompanyAdmin" asp-action="ChangeStatus" asp-route-id=@item.Id method="post">
+            <td>
+                <select name="status">
+                    @if (item.Status == "Принят") { <option value="accept" selected>Принят</option> }
+                    else { <option value="accept">Принят</option> }
+                    @if (item.Status == "В пути") { <option value="way" selected>В пути</option> }
+                    else { <option value="way">В пути</option> }
+                    @if (item.Status == "Доставлен") { <option value="finish" selected>Доставлен</option> }
+                    else { <option value="finish">Доставлен</option> }
+                    @if (item.Status == "Отменён") { <option value="cancel" selected>Отменён</option> }
+                    else { <option value="cancel">Отменён</option> }
+                </select>
+            </td>
+            <td>@item.Products</td>
+            <td>@item.Date</td>
+            <td>@item.Email (@item.Company)</td>
+            <td>
+                <button type="submit" style="background: green;border-radius: 10px;color: white;">Сохранить</button>
+            </td>
+            </form>
+        </tr>
+    
+</table>
+<form asp-controller="CompanyAdmin" asp-action="ClearOrders" method="post">
+    <button class="registerbtn" style="background-color: red; color: white; width:100%;">Очистить заказы</button>
+</form>
+</body>
+</html>

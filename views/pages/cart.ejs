@@ -48,8 +48,8 @@
             <form action="/cart/createOrder" method="post">
                 <div style="display: flex;justify-content: space-between;margin-top: 10px;margin-bottom: 10px;font-weight: 500;">
                     <div style="display: flex;">
-                        <label for="method">Выберите способ оплаты:</label>
-                        <select name="method">
+                        <label for="paymentMethod">Выберите способ оплаты:</label>
+                        <select name="paymentMethod">
                             <option value="money">Наличные (при получении)</option>
                             <option value="card">Карта (при получении)</option>
                         </select>
@@ -58,6 +58,7 @@
                         <% const item = cart[key] %>
                         <% price += item.Price * item.Count; %>
                     <% } %>
+                    <input type="hidden" name="totalPrice" value="<%= price %>">
                     <a style="display: flex;justify-content: flex-end;">Стоимость заказа: <%= price %> BYN</a>
                 </div>
                 <button class="b" type="submit" style="background: white;border-radius: 10px;width: 100%;height: 40px;margin-bottom: 10px;font-weight: 500;">Оформить заказ</button>
