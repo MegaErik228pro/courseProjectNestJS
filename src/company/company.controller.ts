@@ -1,4 +1,4 @@
-import { Body, Controller, ForbiddenException, Get, Param, Post, Query, Render, Res, Session, UseGuards } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, Param, Post, Query, Render, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { GetUser } from 'src/auth/decorator';
 import { User } from '@prisma/client';
 import { CompanyService } from './company.service';
@@ -7,7 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth-guard';
 import { RolesGuard } from 'src/auth/guard/role.guard';
 import { Roles } from 'src/auth/guard/roles.decorator';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 @Controller('company')
 export class CompanyController {
@@ -35,7 +35,7 @@ export class CompanyController {
     }
 
     @Get(':id')
-    async getCompany(@Param('id') id: number, @Session() session : any, @Res() res: Response, @Query('product') productSearch: string, @Query('allergen') allergenSearch: string)
+    async getCompany(@Param('id') id: number, @Session() session: Record<string, any>, @Res() res: Response, @Req() req: Request, @Query('product') productSearch: string, @Query('allergen') allergenSearch: string)
     {
         try{
             if (!Number.isNaN(Number(id)))
@@ -75,7 +75,7 @@ export class CompanyController {
     @Roles('companyAdmin')
     @Get(':id/admin')
     @Render('pages/admin/company')
-    async getCompanyAdmin(@Param('id') id: number, @GetUser() user: User, @Session() session : any)
+    async getCompanyAdmin(@Param('id') id: number, @GetUser() user: User, @Session() session : Record<string, any>)
     {
         if (user.AdminKey == Number(id))
             return this.companyService.getCompany(Number(id), session);
@@ -96,7 +96,7 @@ export class CompanyController {
     @Roles('admin')
     @Get('admin/updateCompany/:id')
     @Render('pages/admin/updateCompany')
-    async getUpdateAdmin(@Param('id') id: number, @Session() session : any)
+    async getUpdateAdmin(@Param('id') id: number, @Session() session : Record<string, any>)
     {
         return this.companyService.getCompany(Number(id), session);
     }

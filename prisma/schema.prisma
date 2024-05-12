@@ -28,9 +28,8 @@ model Company {
   Order     Order[]
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model History {
-  IDOrder       Int
+  IDOrder       Int      @unique(map: "UQ__History__5CBBCADA92D94551")
   User          String   @db.NVarChar(50)
   Company       String   @db.NVarChar(50)
   OrderDate     DateTime @db.DateTime
@@ -38,12 +37,10 @@ model History {
   PaymentMethod String   @db.NVarChar(50)
   TotalPrice    Decimal  @db.Decimal(8, 2)
   Products      String?  @db.NVarChar(300)
-
-  @@ignore
 }
 
 model Order {
-  IDOrder       Int      @id(map: "PK__Order__5CBBCADB4457D655") @default(autoincrement())
+  IDOrder       Int      @id(map: "PK__Order__5CBBCADB4D314347") @default(autoincrement())
   IDUser        Int
   IDCompany     Int
   OrderDate     DateTime @db.DateTime
@@ -51,8 +48,8 @@ model Order {
   PaymentMethod String   @db.NVarChar(50)
   TotalPrice    Decimal  @db.Decimal(8, 2)
   Products      String?  @db.NVarChar(300)
-  Company       Company  @relation(fields: [IDCompany], references: [IDCompany], onUpdate: NoAction, map: "FK__Order__IDCompany__336AA144")
-  User          User     @relation(fields: [IDUser], references: [IDUser], onUpdate: NoAction, map: "FK__Order__IDUser__32767D0B")
+  Company       Company  @relation(fields: [IDCompany], references: [IDCompany], onDelete: Cascade, onUpdate: NoAction, map: "FK__Order__IDCompany__44952D46")
+  User          User     @relation(fields: [IDUser], references: [IDUser], onDelete: Cascade, onUpdate: NoAction, map: "FK__Order__IDUser__43A1090D")
 }
 
 model Product {

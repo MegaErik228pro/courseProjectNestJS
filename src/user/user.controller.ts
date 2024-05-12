@@ -39,6 +39,14 @@ export class UserController {
         return await res.redirect('/user/me');
     }
 
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('user')
+    @Get('myOrders')
+    @Render('pages/order')
+    async getMyOrders(@GetUser() user: User) {
+        return await this.userService.getMyOrders(user);
+    }
+
     // УПРАВЛЕНИЕ ПРОФИЛЯМИ
 
     @UseGuards(JwtAuthGuard, RolesGuard)

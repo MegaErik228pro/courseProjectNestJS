@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+    <title>Мои заказы</title>
+    <meta charset="utf-8" />
+</head>
+<%- include('../partials/header.ejs') %>
+<body>
+    <div class="container">
+        <h2>Мои заказы</h2>
+        <% if (orders.length == 0) { %>
+            <h3>Вы ещё не оформили ни одного заказа.</h3>
+        <% } else { %>
+        <table class="table">
+            <tr><th>Номер Заказа</th><th>Ресторан</th><th>Стоимость</th><th>Метод оплаты</th><th>Статус</th><th>Товары</th><th>Дата заказа</th></tr>
+        <% orders.forEach(function(item) { %>
+            <tr>
+                <td><%= item.Id %></td>
+                <td><%= item.Company %></td>
+                <td><%= item.Price %></td>
+                <td><%= item.Method %></td>
+                <% if (item.Status == "Принят") { %>
+                    <td style="color: green;"><%= item.Status %></td>
+                <% } %>
+                <% if (item.Status == "Доставлен") { %>
+                    <td><%= item.Status %></td>
+                <% } %>
+                <% if (item.Status == "В пути") { %>
+                    <td style="color: green;"><%= item.Status %></td>
+                <% } %>
+                <% if (item.Status == "Отменён") { %>
+                    <td style="color: rgb(128, 0, 0);"><%= item.Status %></td>
+                <% } %>
+                <td><%= item.Products %></td>
+                <td><%= item.Date %></td>
+            </tr>
+        <% }); %>
+        </table>
+        <% } %>
+        <div class="company"></div>
+    </div>
+</body>
+<%- include('../partials/footer.ejs') %>
+</html>

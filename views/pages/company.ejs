@@ -80,7 +80,15 @@
                 <h3><%= item.Name %></h3>
                 <div style="display: flex;flex-direction: row;flex-wrap: wrap;margin-bottom: 5px;">
                 <% item.Product.forEach(function(prod) { %>
-                    <% InCart = false; %>
+                    <% let InCart = false; %>
+
+                    <!-- ПРОВЕРКА НАХОЖДЕНИЯ ТОВАРА В КОРЗИНЕ -->
+                    <% for (let productId in session) { %>
+                        <% if (productId == prod.IDProduct) { %>
+                            <% InCart = true; %>
+                            <% break; %>
+                        <% } %>
+                    <% } %>
 
                     <!-- МОДАЛЬНОЕ ОКНО -->
                     <div id="modDialog" class="modal fade" style="display: none; justify-content: center; align-items: center;text-align: -webkit-center;" >
@@ -124,7 +132,22 @@
                             <a><%= prod.Gram %>г</a>
                             <a><%= prod.Price %> BYN</a>
                         </div>
+
+                        <!-- КОРЗИНА -->
+                        <% if (InCart == true) { %>
+                            <form action="/cart/remove/<%= prod.IDProduct %>" method="post">
+                                <button style="border-radius: 10px;width: 180px;height: 40px;margin-bottom: 10px;font-weight: 500;">Убрать</button>
+                            </form>
+                        <% } else { %>
+                            <form action="/cart/add/<%= prod.IDProduct %>" method="post">
+                                <button style="border-radius: 10px;width: 180px;height: 40px;margin-bottom: 10px;font-weight: 500;">Добавить</button>
+                            </form>
+                        <% } %>
+
                     </div>
+
+                    
+
                 <% }); %>
                 </div>
                 </div>

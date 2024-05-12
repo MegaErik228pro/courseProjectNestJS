@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CategoryDto, CompanyDto, ProductDto } from "./dto";
-import { Session } from "express-session";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -28,7 +27,7 @@ export class CompanyService{
         return { companies, search };
     }
 
-    async getCompany(id: number, session: Session) : Promise<object> {
+    async getCompany(id: number, session: Record<string, any>) : Promise<object> {
         try{
             const searchProduct = null;
             const searchAllergen = null;
@@ -46,15 +45,17 @@ export class CompanyService{
             });
             if (!company)
                 throw new NotFoundException('Страницы не существует');
-            console.log(session);
-            return { company, searchProduct, searchAllergen, session};
+
+            const cart = session.cart ? session.cart : {};
+            console.log(cart);
+            return { company, searchProduct, searchAllergen, session: cart};
         }
         catch(error){
             throw error;
         }
     }
 
-    async getCompanySearchProduct(id: number, searchProduct: string, session: Session) : Promise<object> {
+    async getCompanySearchProduct(id: number, searchProduct: string, session: Record<string, any>) : Promise<object> {
         const searchAllergen = null;
         const company = await prisma.company.findFirst({
             where:{
@@ -76,10 +77,11 @@ export class CompanyService{
         });
         if (!company)
             throw new NotFoundException('Страницы не существует');
-        return { company, searchProduct, searchAllergen, session};
+        const cart = session.cart ? session.cart : {};
+        return { company, searchProduct, searchAllergen, session: cart};
     }
 
-    async getCompanySearchAllergen(id: number, searchAllergen: string, session: Session) : Promise<object> {
+    async getCompanySearchAllergen(id: number, searchAllergen: string, session: Record<string, any>) : Promise<object> {
         const searchProduct = null;
         const allergens = searchAllergen.split('');
         const company = await prisma.company.findFirst({
@@ -104,10 +106,11 @@ export class CompanyService{
         });
         if (!company)
             throw new NotFoundException('Страницы не существует');
-        return { company, searchProduct, searchAllergen, session};
+        const cart = session.cart ? session.cart : {};
+        return { company, searchProduct, searchAllergen, session: cart};
     }
 
-    async getCompanySearchProductAndAllergen(id: number, searchProduct: string, searchAllergen: string, session: Session) : Promise<object> {
+    async getCompanySearchProductAndAllergen(id: number, searchProduct: string, searchAllergen: string, session: Record<string, any>) : Promise<object> {
         const allergens = searchAllergen.split('');
         const company = await prisma.company.findFirst({
             where:{
@@ -134,7 +137,8 @@ export class CompanyService{
         });
         if (!company)
             throw new NotFoundException('Страницы не существует');
-        return { company, searchProduct, searchAllergen, session};
+        const cart = session.cart ? session.cart : {};
+        return { company, searchProduct, searchAllergen, session: cart};
     }
 
     async getCategory(id: number) : Promise<object> {

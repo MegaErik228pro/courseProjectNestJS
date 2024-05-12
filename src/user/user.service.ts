@@ -1,13 +1,14 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
-import { User } from "@prisma/client";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaClient, User } from "@prisma/client";
 import { RightsDto, UpdateDto } from "./dto";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import * as argon from 'argon2';
 
+const prisma = new PrismaClient();
+
 @Injectable()
 export class UserService{
-    constructor(private prisma: PrismaService) {};
+    constructor() {};
 
     // МОЙ ПРОФИЛЬ
 
@@ -17,7 +18,7 @@ export class UserService{
 
     async deleteMe(user: User){
         try{
-            await this.prisma.user.delete({
+            await prisma.user.delete({
                 where:{
                     IDUser: user.IDUser,
                 }
@@ -31,8 +32,7 @@ export class UserService{
 
     async updateMe(user: User, dto: UpdateDto){
         const hash = await argon.hash(dto.password);
-        console.log('new name ' + dto.name);
-        await this.prisma.user.update({
+        await prisma.user.update({
             where: {
               IDUser: user.IDUser,
             },
@@ -45,10 +45,20 @@ export class UserService{
         })
     }
 
+    // МОИ ЗАКАЗЫ
+    async getMyOrders(user: User) : Promise<object>{
+        const orders = await prisma.order.findMany({
+            where:{
+                IDUser: user.IDUser
+            }
+        });
+        return { orders }
+    }
+
     // УПРАВЛЕНИЕ ПРОФИЛЯМИ
 
     async getAll() : Promise<object> {
-        const users = await this.prisma.user.findMany({
+        const users = await prisma.user.findMany({
             where: {
               OR: [
                 { Role: 'user' },
@@ -56,18 +66,18 @@ export class UserService{
               ]
             }
         });
-        const companies = await this.prisma.company.findMany({});
+        const companies = await prisma.company.findMany({});
         return { users, companies }
     }
 
     async delete(id: number){
         try{
-            await this.prisma.user.delete({
+            await prisma.user.delete({
                 where:{
                     IDUser: id,
                 }
             });
-            return await this.prisma.user.findMany();
+            return await prisma.user.findMany();
         }
         catch(error){
             if (error instanceof PrismaClientKnownRequestError){
@@ -82,7 +92,7 @@ export class UserService{
 
     async updateRights(dto: RightsDto, id: number){
         if(dto.role == 'user')       
-            await this.prisma.user.update({
+            await prisma.user.update({
                 where: {
                 IDUser: id,
                 },
@@ -92,7 +102,7 @@ export class UserService{
                 },
             });
         else
-            await this.prisma.user.update({
+            await prisma.user.update({
                 where: {
                 IDUser: id,
                 },
