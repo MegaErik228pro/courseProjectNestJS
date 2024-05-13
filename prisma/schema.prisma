@@ -29,7 +29,8 @@ model Company {
 }
 
 model History {
-  IDOrder       Int      @unique(map: "UQ__History__5CBBCADA92D94551")
+  IDHistory     Int      @id(map: "PK__History__DD221D259C165900") @default(autoincrement())
+  IDOrder       Int      
   User          String   @db.NVarChar(50)
   Company       String   @db.NVarChar(50)
   OrderDate     DateTime @db.DateTime

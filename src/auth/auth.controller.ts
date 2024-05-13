@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render, Res } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Redirect, Render, Res, Session } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginDto, RegisterDto } from "./dto";
 import { Response } from 'express';
@@ -53,7 +53,7 @@ export class AuthController{
 
     @Get('logout')
     @Redirect('/company')
-    logout(@Res() res: Response){
-        this.authService.logout(res);
+    logout(@Res() res: Response, @Session() session: Record<string, any>){
+        this.authService.logout(res, session);
     }
 }

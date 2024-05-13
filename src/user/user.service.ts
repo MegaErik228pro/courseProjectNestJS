@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { Order, PrismaClient, User } from "@prisma/client";
-import { RightsDto, UpdateDto } from "./dto";
+import { RightsDto, StatusDto, UpdateDto } from "./dto";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import * as argon from 'argon2';
 
@@ -159,8 +159,18 @@ export class UserService{
         const orders = await prisma.order.findMany({
             where:{
                 IDCompany: company?.IDCompany
+            },
+            include:{
+                User:{
+                    select:{
+                        Email: true,
+                        PhoneNo: true
+                    }
+                }
             }
         });
+
+        console.log(orders);
 
         const ordersWithCompanyNames = await getCompanyNamesForOrders(orders);
 
@@ -207,6 +217,40 @@ export class UserService{
         }
 
         return { orders: formattedOrders, title: 'Текущие заказы' }
+    }
+
+    async updateStatus(dto: StatusDto, id: number){
+        let status;
+        switch (dto.status) {
+            case 'accept':
+                status = 'Принят';
+                break;
+            case 'way':
+                status = 'В пути';
+                break;
+            case 'finish':
+                status = 'Доставлен';
+                break;
+            case 'cancel':
+                status = 'Отменён';
+                break;
+        }
+        await prisma.order.update({
+            where:{
+                IDOrder: id
+            },
+            data:{
+                Status: status
+            }
+        })
+    }
+
+    async clearOrders(user: User){
+        await prisma.order.deleteMany({
+            where:{
+                IDCompany: Number(user.AdminKey)
+            }
+        })
     }
 
     // ИСТОРИЯ ЗАКАЗОВ

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Render, Req, Res, Session, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, ForbiddenException, Get, Param, Post, Render, Req, Res, Session, UseGuards } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { CartService } from "./cart.service";
 import { Request, Response } from 'express';
@@ -24,6 +24,12 @@ export class CartController{
             if (!request.cookies.access_token)
                 response.redirect('/auth/login');
             
+            const accessToken = request.cookies.access_token;
+            const decodedToken: any = this.jwtService.verify(accessToken);
+
+            if (decodedToken.role == 'companyAdmin' || decodedToken.role == 'admin')
+                throw new ForbiddenException('Оформлять заказы и пользоваться корзиной может только пользователь');
+
             if (!session.cart) {
                 session.cart = {};
             }
@@ -138,7 +144,6 @@ export class CartController{
                     };
                 }
             });
-            console.log(cartObject);
             return { cart: cartObject };
         }
     }
@@ -208,7 +213,8 @@ export class CartController{
                 Products: productsString
             }
         });
-        console.log(cartObject);
+
+        session.cart = null;
         return response.redirect('/user/MyOrders');
     }
 }

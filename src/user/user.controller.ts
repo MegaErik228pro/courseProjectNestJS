@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Render, Res, UseGuards } from '@nes
 import { GetUser } from 'src/auth/decorator';
 import { User } from '@prisma/client';
 import { UserService } from './user.service';
-import { RightsDto, UpdateDto } from './dto';
+import { RightsDto, StatusDto, UpdateDto } from './dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth-guard';
 import { RolesGuard } from 'src/auth/guard/role.guard';
 import { Roles } from 'src/auth/guard/roles.decorator';
@@ -63,6 +63,22 @@ export class UserController {
     @Render('pages/admin/order')
     async getCompanyOrders(@GetUser() user: User) {
         return await this.userService.getCompanyOrders(user);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('companyAdmin')
+    @Post('companyAdmin/updateStatus/:id')
+    async updateCompanyOrders(@Param('id') id : number, @Body() dto: StatusDto, @Res() res: Response) {
+        await this.userService.updateStatus(dto, Number(id));
+        return res.redirect('/user/companyAdmin/orders');
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('companyAdmin')
+    @Post('companyAdmin/clearOrders')
+    async clearCompanyOrders(@GetUser() user: User, @Res() res: Response) {
+        await this.userService.clearOrders(user);
+        return res.redirect('/user/companyAdmin/orders');
     }
 
     // ИСТОРИЯ

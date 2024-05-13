@@ -94,8 +94,9 @@ export class AuthService{
         await res.cookie('refresh_token', token.refresh_token);
     }
 
-    async logout(res: Response) {
+    async logout(res: Response, session: Record<string, any>) {
         await res.clearCookie('access_token', { path: '/' });
         await res.clearCookie('refresh_token', { path: '/' });
+        session.cart = null;
     }
 }
