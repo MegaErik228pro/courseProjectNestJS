@@ -9,6 +9,7 @@ import { RolesGuard } from "src/auth/guard/role.guard";
 import { PrismaClient, User } from "@prisma/client";
 import { GetUser } from "src/auth/decorator";
 import { OrderDto } from "./dto";
+import { OrderGateway } from 'src/socket/socket.gateway';
 
 const prisma = new PrismaClient();
 
@@ -16,6 +17,7 @@ const prisma = new PrismaClient();
 export class CartController{
     constructor(private readonly cartService: CartService,
         private readonly jwtService: JwtService,
+        private orderGateway: OrderGateway
     ) {}
     
     @Post('add/:id')
@@ -214,7 +216,10 @@ export class CartController{
             }
         });
 
+        this.orderGateway.handleCreateOrder({ IDCompany: Number(idCompany) });
+
         session.cart = null;
+
         return response.redirect('/user/MyOrders');
     }
 }

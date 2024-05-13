@@ -14,6 +14,7 @@ import { options } from './auth/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TokenMiddleware } from './middleware/tokenMIddleware';
 import { UserController } from './user/user.controller';
+import { OrderGateway } from './socket/socket.gateway';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -22,7 +23,7 @@ import { UserController } from './user/user.controller';
     rootPath: 'C:\\Users\\Erik\\Desktop\\3course\\DeliveryHub\\delivery\\wwwroot',
   }), AuthModule, UserModule, PrismaModule, CompanyModule, CartModule, JwtModule.registerAsync(options())],
   controllers: [AppController, CartController],
-  providers: [AppService, CartService],
+  providers: [AppService, CartService, OrderGateway],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
@@ -30,6 +31,7 @@ export class AppModule {
       .apply(TokenMiddleware)
       .forRoutes(
         UserController,
+        CartController,
         { path: 'company/*', method: RequestMethod.POST }
       );
   }

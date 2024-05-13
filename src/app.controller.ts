@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Render, Req } from '@nestjs/common';
+import { Controller, Get, Param, Post, Redirect, Render, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
@@ -8,6 +8,7 @@ export class AppController {
   constructor(private readonly appService: AppService, private readonly jwtService: JwtService) {}
 
   @Get()
+  @Redirect('/company')
   async getHello() : Promise<object> {
     return { title: 'Title', subtitle: 'Subtitle' };
   }
@@ -21,7 +22,6 @@ export class AppController {
         return decodedToken;  
       }
       catch (error) {
-        console.log(error)
         return 'un';
       }
   }

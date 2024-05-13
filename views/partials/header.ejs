@@ -10,11 +10,54 @@
     <script src="/js/Header.js"></script>
     <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/site.js" asp-append-version="true"></script>
+    <style>
+        .close {
+            float: right;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #000;
+            text-shadow: 0 1px 0 #fff;
+            opacity: .5;
+            border: none;
+            background-color: white;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+            opacity: .75;
+            border: none;
+        }
+
+        .modal-backdrop {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
+                <!-- МОДАЛЬНОЕ ОКНО -->
+                <div id="modDialog" class="modal fade" style="display: none; justify-content: center; align-items: center;text-align: -webkit-right;" >
+                    <div id="dialogContent" class="modal-dialog"></div>
+                    <div class="modal-content" style="width: 10%;">
+                        <div class="modal-header" style="display: flex;justify-content: flex-end;height: 30px;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div style="height: fit-content;display: flex;flex-direction: column;align-content: center;margin-bottom: 10px;justify-content: space-between;">
+                                <a>У вас новый заказ!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <a class="navbar-brand" href="/company">Delivery</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -95,10 +138,12 @@
         </nav>
     </header>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         async function getCurrentUser() {
           try {
-            const response = await fetch('http://localhost:8000/', {
+            const response = await fetch('https://localhost:8000/', {
               method: 'POST',
               credentials: 'same-origin',
             });
@@ -116,56 +161,85 @@
           }
         }
         
-            getCurrentUser().then(role => {
-            const nonAuth = document.getElementById('nonAuth');
-            const admin = document.getElementById('admin');
-            const cAdmin = document.getElementById('cAdmin');
-            const user = document.getElementById('user');
-            const abar = document.getElementById('adminBar');
-            const cabar = document.getElementById('cAdminBar');
-            const caManagmentLink = document.getElementById('caManagmentLink');
-        
-            console.log('Роль: ', role.role);
-            console.log('Ключ: ', role.key);
-            switch (role.role) {
-                case 'user':
-                    user.style.display = 'flex';
-                    admin.style.display = 'none';
-                    cAdmin.style.display = 'none';
-                    nonAuth.style.display = 'none';
-                    abar.style.display = 'none';
-                    cabar.style.display = 'none';
-                    break;
-                case 'admin':
-                    user.style.display = 'none';
-                    admin.style.display = 'flex';
-                    cAdmin.style.display = 'none';
-                    nonAuth.style.display = 'none';   
-                    abar.style.display = 'flex';
-                    cabar.style.display = 'none';   
-                    break;
-                case 'companyAdmin':
-                    user.style.display = 'none';
-                    admin.style.display = 'none';
-                    cAdmin.style.display = 'flex';
-                    nonAuth.style.display = 'none';
-                    abar.style.display = 'none';
-                    cabar.style.display = 'flex';
-                    cabar.textContent = 'COMPANY ADMIN KEY: ' + role.key;
-                    const link = '/company/' + role.key + '/admin';
-                    caManagmentLink.setAttribute('href', link);
-                    break;
-                default:
-                    user.style.display = 'none';
-                    admin.style.display = 'none';
-                    cAdmin.style.display = 'none';
-                    nonAuth.style.display = 'flex';
-                    abar.style.display = 'none';
-                    cabar.style.display = 'none';
-                break;
+    getCurrentUser().then(role => {
+    const nonAuth = document.getElementById('nonAuth');
+    const admin = document.getElementById('admin');
+    const cAdmin = document.getElementById('cAdmin');
+    const user = document.getElementById('user');
+    const abar = document.getElementById('adminBar');
+    const cabar = document.getElementById('cAdminBar');
+    const caManagmentLink = document.getElementById('caManagmentLink');
+
+    console.log('Роль: ', role.role);
+    console.log('Ключ: ', role.key);
+
+    const socket = io('https://localhost:8000', {
+        query: {
+            key: role.key
+        }
+    });
+
+    socket.on('connect', () => {
+        console.log('Соединение установлено');
+    });
+
+    socket.on('orderCreated', (data) => {
+        console.log('Получено сообщение:', data.message);
+
+        //const messagesDiv = document.getElementById('message');
+        //messagesDiv.innerHTML += `<p>${data.message}</p>`;
+
+        $('#modDialog').modal('show');
+        var modal = document.getElementById('modDialog');
+        window.onclick = function(event) {
+        if (event.target == modal) {
+            event.stopPropagation();
+            }
+        }
+    });
+
+    
+    switch (role.role) {
+        case 'user':
+            user.style.display = 'flex';
+            admin.style.display = 'none';
+            cAdmin.style.display = 'none';
+            nonAuth.style.display = 'none';
+            abar.style.display = 'none';
+            cabar.style.display = 'none';
+            break;
+        case 'admin':
+            user.style.display = 'none';
+            admin.style.display = 'flex';
+            cAdmin.style.display = 'none';
+            nonAuth.style.display = 'none';   
+            abar.style.display = 'flex';
+            cabar.style.display = 'none';   
+            break;
+        case 'companyAdmin':
+            user.style.display = 'none';
+            admin.style.display = 'none';
+            cAdmin.style.display = 'flex';
+            nonAuth.style.display = 'none';
+            abar.style.display = 'none';
+            cabar.style.display = 'flex';
+            cabar.textContent = 'COMPANY ADMIN KEY: ' + role.key;
+            const link = '/company/' + role.key + '/admin';
+            caManagmentLink.setAttribute('href', link);
+            break;
+        default:
+            user.style.display = 'none';
+            admin.style.display = 'none';
+            cAdmin.style.display = 'none';
+            nonAuth.style.display = 'flex';
+            abar.style.display = 'none';
+            cabar.style.display = 'none';
+        break;
             }
         })
-        
+        $('#modDialog').on('click', '.close', function() {
+            $('#modDialog').modal('hide');
+        });
     </script>
 </body>
 </html>

@@ -47,7 +47,6 @@ export class CompanyService{
                 throw new NotFoundException('Страницы не существует');
 
             const cart = session.cart ? session.cart : {};
-            console.log(cart);
             return { company, searchProduct, searchAllergen, session: cart};
         }
         catch(error){
