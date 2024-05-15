@@ -7,6 +7,7 @@
 </head>
 <%- include('../../partials/header.ejs') %>
 <body>
+  <div class="container">
     <form action="/auth/login" method="POST">
       <div class="container">
         <h1>Авторизация</h1>
@@ -24,9 +25,10 @@
       </div>
 
       <div class="container signin">
-        <p>Нету аккаунта? <a href="register">Регистрация</a>.</p>
+        <p>Нету аккаунта? <a href="/auth/register">Регистрация</a>.</p>
       </div>
     </form>
+  </div>
 </body>
 <%- include('../../partials/footer.ejs') %>
 </html>

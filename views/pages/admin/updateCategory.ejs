@@ -7,20 +7,22 @@
 </head>
 <%- include('../../partials/header.ejs') %>
 <body>
-    <form action="<%= category.IDCategory %>" method="post">
     <div class="container">
-    <h1>Изменить категорию</h1>
-    <hr>
-    
-    <label for="email"><b>Идентификатор: <%= category.IDCategory %></b></label>
-    <hr>
+        <form action="<%= category.IDCategory %>" method="post">
+        <div class="container">
+        <h1>Изменить категорию</h1>
+        <hr>
+        
+        <label for="email"><b>Идентификатор: <%= category.IDCategory %></b></label>
+        <hr>
 
-    <label for="name"><b>Название</b></label>
-    <input type="text" placeholder="Закуски" name="name" required value="<%= category.Name %>">
+        <label for="name"><b>Название</b></label>
+        <input type="text" placeholder="Закуски" name="name" required value="<%= category.Name %>">
 
+        </div>
+        <button type="submit" class="registerbtn">Изменить</button>
+        </form>
     </div>
-    <button type="submit" class="registerbtn">Изменить</button>
-    </form>
 </body>
 <%- include('../../partials/footer.ejs') %>
 </html>

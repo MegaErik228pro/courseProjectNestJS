@@ -12,11 +12,14 @@ export class OrderGateway {
   handleCreateOrder(@MessageBody() data: any) {
 
     const key = data.IDCompany;
-    const socketId = this.clients.get(key);
 
-    if (socketId) {
-      this.server.to(String(socketId)).emit('orderCreated', { message: 'У вас новый заказ!' });
-    }
+    const allKeys = Array.from(this.clients.entries())
+    .filter(([, value]) => value === key)
+    .map(([key, ]) => key);
+
+    allKeys.forEach(element => {
+      this.server.to(String(element)).emit('orderCreated', { message: 'У вас новый заказ!' });
+    });
   }
 
   handleConnection(client: Socket) {

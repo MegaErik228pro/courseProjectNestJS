@@ -15,7 +15,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (status == 400)
     {
-        response.redirect(request.url + '/' + errorMessage);
+      if (request.url.endsWith('%20'))
+        response.redirect('https://localhost:8000' + request.url.substring(0, request.url.lastIndexOf('/')) + '/' + errorMessage);
+      else
+        response.redirect('https://localhost:8000' + request.url + '/' + errorMessage);
     }
     else
     {

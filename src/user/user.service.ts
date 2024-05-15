@@ -12,8 +12,8 @@ export class UserService{
 
     // МОЙ ПРОФИЛЬ
 
-    async getMe(user: User){
-        return user;
+    async getMe(user: User, message: string){
+        return { usr: user, message };
     }
 
     async deleteMe(user: User){
@@ -169,8 +169,6 @@ export class UserService{
                 }
             }
         });
-
-        console.log(orders);
 
         const ordersWithCompanyNames = await getCompanyNamesForOrders(orders);
 

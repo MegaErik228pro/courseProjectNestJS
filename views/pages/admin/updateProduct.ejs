@@ -7,65 +7,66 @@
 </head>
 <%- include('../../partials/header.ejs') %>
 <body>
-
-    <form action="<%= product.IDProduct %>" method="post">
     <div class="container">
-    <h1>Изменить товар</h1>
-    <hr>
-    
-    <label for="email"><b>Идентификатор: <%= product.IDProduct %></b></label>
-    <hr>
+        <form action="<%= url %>" method="post">
+        <div class="container">
+        <h1>Изменить товар</h1>
+        <hr>
+        
+        <label for="email"><b>Идентификатор: <%= product.IDProduct %></b></label>
+        <hr>
 
-    <label for="name"><b>Название</b></label>
-    <input type="text" placeholder="KFC" name="name" required value="<%= product.Name %>">
+        <label for="name"><b>Название</b></label>
+        <input type="text" placeholder="KFC" name="name" required value="<%= product.Name %>">
 
-    <label for="path"><b>Путь к файлу</b></label>
-    <input type="text" placeholder="http://path.jpeg" name="path" required value="<%= product.ImagePath %>">
+        <label for="path"><b>Путь к файлу</b></label>
+        <input type="text" placeholder="http://path.jpeg" name="path" required value="<%= product.ImagePath %>">
 
-    <label for="description"><b>Описание</b></label>
-    <input type="text" placeholder="Яблоко, апельсин, помидор" name="description" required value="<%= product.Description %>">
+        <label for="description"><b>Описание</b></label>
+        <input type="text" placeholder="Яблоко, апельсин, помидор" name="description" required value="<%= product.Description %>">
 
-    <label for="price"><b>Цена</b></label>
-    <input type="text" placeholder="19,99" name="price" required value="<%= product.Price %>">
+        <label for="price"><b>Цена</b></label>
+        <input type="text" placeholder="19,99" name="price" required value="<%= product.Price %>">
 
-    <label for="gram"><b>Граммовка</b></label>
-    <input type="text" placeholder="330" name="gram" required value="<%= product.Gram %>">
+        <label for="gram"><b>Граммовка</b></label>
+        <input type="text" placeholder="330" name="gram" required value="<%= product.Gram %>">
 
-    <label for="allergens"><b>Аллергены</b></label>
-    <input type="text" placeholder="145" name="allergens" value="<%= product.Allergens %>">
+        <label for="allergens"><b>Аллергены</b></label>
+        <input type="text" placeholder="145" name="allergens" value="<%= product.Allergens %>">
 
-    <div style="display: flex;">
-    <select name="category">
-        <% categories.forEach(function(item) { %>
-            <% if (item.IDCategory == category.IDCategory) { %>
-                <option selected value="<%= item.IDCategory %>"><%= item.Name %></option>
-            <% } else { %> 
-                <option value="<%= item.IDCategory %>"><%= item.Name %></option>
-            <% } %>
-        <% }); %>
-    </select>
-    <svg style="width: 20px;margin-right: 5px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <g id="Layer_60" data-name="Layer 60"><path d="m12 1a11 11 0 1 0 11 11 11 11 0 0 0 -11-11zm0 18a1 1 0 0 1 -1-1 1 1 0 0 1 2 0 1 1 0 0 1 -1 1zm1.53-6.3a.94.94 0 0 0 -.53.89v.41a1 1 0 0 1 -2 0v-.42a2.91 2.91 0 0 1 1.76-2.73 2 2 0 1 0 -2.76-1.85 1 1 0 0 1 -2 0 4 4 0 0 1 4.72-3.94 4 4 0 0 1 3.22 3.22 4 4 0 0 1 -2.41 4.41z" fill="rgb(0,0,0)"/>
-            <title>
-                <title>Формат запроса:</title>
-                <title>1 - Орехи</title>
-                <title>2 - Молоко</title>
-                <title>3 - Яйца</title>
-                <title>4 - Рыба</title>
-                <title>5 - Пшеница</title>
-                <title>6 - Соя</title>
-                <title>7 - Грибы</title>
-                <title>8 - Цитрусовые</title>
-                <title>Пример: 158</title>
-            </title>
-            </g>
-            </svg>
+        <div style="display: flex;">
+        <select name="category">
+            <% categories.forEach(function(item) { %>
+                <% if (item.IDCategory == category.IDCategory) { %>
+                    <option selected value="<%= item.IDCategory %>"><%= item.Name %></option>
+                <% } else { %> 
+                    <option value="<%= item.IDCategory %>"><%= item.Name %></option>
+                <% } %>
+            <% }); %>
+        </select>
+        <svg style="width: 20px;margin-right: 5px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <g id="Layer_60" data-name="Layer 60"><path d="m12 1a11 11 0 1 0 11 11 11 11 0 0 0 -11-11zm0 18a1 1 0 0 1 -1-1 1 1 0 0 1 2 0 1 1 0 0 1 -1 1zm1.53-6.3a.94.94 0 0 0 -.53.89v.41a1 1 0 0 1 -2 0v-.42a2.91 2.91 0 0 1 1.76-2.73 2 2 0 1 0 -2.76-1.85 1 1 0 0 1 -2 0 4 4 0 0 1 4.72-3.94 4 4 0 0 1 3.22 3.22 4 4 0 0 1 -2.41 4.41z" fill="rgb(0,0,0)"/>
+                <title>
+                    <title>Формат запроса:</title>
+                    <title>1 - Орехи</title>
+                    <title>2 - Молоко</title>
+                    <title>3 - Яйца</title>
+                    <title>4 - Рыба</title>
+                    <title>5 - Пшеница</title>
+                    <title>6 - Соя</title>
+                    <title>7 - Грибы</title>
+                    <title>8 - Цитрусовые</title>
+                    <title>Пример: 158</title>
+                </title>
+                </g>
+                </svg>
+        </div>
+
+        </div>
+        <a style="color: red;"><%= message %></a>
+        <button type="submit" class="registerbtn">Изменить</button>
+        </form>
     </div>
-
-    </div>
-    <button type="submit" class="registerbtn">Изменить</button>
-    </form>
-    
 </body>
 <%- include('../../partials/footer.ejs') %>
 </html>

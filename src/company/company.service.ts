@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { CategoryDto, CompanyDto, ProductDto } from "./dto";
 import { PrismaClient } from "@prisma/client";
 
@@ -84,19 +84,37 @@ export class CompanyService{
         const searchProduct = null;
         const allergens = searchAllergen.split('');
         const company = await prisma.company.findFirst({
-            where:{
+            where: {
                 IDCompany: id
             },
-            include:{
-                Category:{
-                    include:{
-                        Product:{
-                            where:{
-                                NOT: allergens.map(allergen => ({
-                                    Allergens: {
-                                        contains: allergen,
+            include: {
+                Category: {
+                    include: {
+                        Product: {
+                            where: {
+                                OR: [
+                                    {
+                                        NOT: allergens.map(allergen => ({
+                                            Allergens: {
+                                                contains: allergen,
+                                            }
+                                        }))
+                                    },
+                                    {
+                                        OR: [
+                                            {
+                                                Allergens: {
+                                                    equals: '',
+                                                }
+                                            },
+                                            {
+                                                Allergens: {
+                                                    equals: null,
+                                                }
+                                            }
+                                        ]
                                     }
-                                }))
+                                ]
                             }
                         }
                     }
@@ -123,11 +141,29 @@ export class CompanyService{
                                 Name: {
                                     contains: searchProduct,
                                 },
-                                NOT: allergens.map(allergen => ({
-                                    Allergens: {
-                                        contains: allergen,
+                                OR: [
+                                    {
+                                        NOT: allergens.map(allergen => ({
+                                            Allergens: {
+                                                contains: allergen,
+                                            }
+                                        }))
+                                    },
+                                    {
+                                        OR: [
+                                            {
+                                                Allergens: {
+                                                    equals: '',
+                                                }
+                                            },
+                                            {
+                                                Allergens: {
+                                                    equals: null,
+                                                }
+                                            }
+                                        ]
                                     }
-                                }))
+                                ]
                             }
                         }
                     }
@@ -149,7 +185,7 @@ export class CompanyService{
         return { category };
     }
 
-    async getCategoryCurrentAndAll(idCompany: number, idCategory: number) : Promise<object> {
+    async getCategoryCurrentAndAll(idCompany: number, idCategory: number, message: string, url: string) : Promise<object> {
         const categories = await prisma.category.findMany({
             where:{
                 IDCompany: idCompany
@@ -160,10 +196,10 @@ export class CompanyService{
                 IDCategory: idCategory
             }
         });
-        return { categories, category };
+        return { categories, category, message, url };
     }
 
-    async getCategoryCurrentAndAllAndProduct(idCompany: number, idCategory: number, idProduct: number) : Promise<object> {
+    async getCategoryCurrentAndAllAndProduct(idCompany: number, idCategory: number, idProduct: number, message: string, url: string) : Promise<object> {
         const categories = await prisma.category.findMany({
             where:{
                 IDCompany: idCompany
@@ -179,7 +215,7 @@ export class CompanyService{
                 IDProduct: idProduct
             }
         });
-        return { categories, category, product };
+        return { categories, category, product, message, url };
     }
 
     async getProduct(productId: number) : Promise<object>{
@@ -291,6 +327,17 @@ export class CompanyService{
     }
 
     async createProduct(id: number, dto: ProductDto){
+        if (isNaN(Number(dto.price)))
+            throw new BadRequestException('Указана некорректная цена ');
+        if (isNaN(Number(dto.gram)))
+            throw new BadRequestException('Указана некорректная граммовка ');
+        const allergens = await prisma.allergen.findMany();
+        const allergenArray = dto.allergens.split('');
+        const isValid = allergenArray.every(char =>
+            allergens.some(allergen => String(allergen.IDAllergen).includes(char))
+          );
+        if (!isValid)
+            throw new BadRequestException('Указаны некорректные аллергены ');
         return await prisma.product.create({
             data:{
                 Name: dto.name,
@@ -305,6 +352,17 @@ export class CompanyService{
     }
 
     async updateProduct(productId: number, dto: ProductDto){
+        if (isNaN(Number(dto.price)))
+            throw new BadRequestException('Указана некорректная цена ');
+        if (isNaN(Number(dto.gram)))
+            throw new BadRequestException('Указана некорректная граммовка ');
+        const allergens = await prisma.allergen.findMany();
+        const allergenArray = dto.allergens.split('');
+        const isValid = allergenArray.every(char =>
+            allergens.some(allergen => String(allergen.IDAllergen).includes(char))
+          );
+        if (!isValid)
+            throw new BadRequestException('Указаны некорректные аллергены ');
         return await prisma.product.update({
             where:{
                 IDProduct: productId

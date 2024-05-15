@@ -12,10 +12,8 @@ export class AuthService{
     constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) {}
     async register(dto: RegisterDto){
         try{
-            // хеширование пароля
             const hash = await argon.hash(dto.password);
 
-            // создание пользователя
             const user = await this.prisma.user.create({
                 data:{
                     Name: dto.name,
@@ -43,17 +41,14 @@ export class AuthService{
 
     async login(dto: LoginDto){
         try{
-            // поиск пользователя
             const user = await this.prisma.user.findUnique({
                 where:{
                     Email: dto.email,
                 },
             });
 
-            // пользователь не найден
             if (!user) throw new ForbiddenException('Пользователь не найден');
 
-            // проверка пароля
             const pwMatches = await argon.verify(user.Password, dto.password);
             if (!pwMatches) throw new ForbiddenException('Неверный пароль');
 
@@ -89,7 +84,6 @@ export class AuthService{
         if (!token) {
             throw new UnauthorizedException();
         }
-
         await res.cookie('access_token', token.access_token);
         await res.cookie('refresh_token', token.refresh_token);
     }

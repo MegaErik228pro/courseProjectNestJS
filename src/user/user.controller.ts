@@ -16,11 +16,10 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin', 'user', 'companyAdmin')
-    @Get('me')
+    @Get('me/:message?')
     @Render('pages/profile')
     async getMe(@GetUser() user: User, @Param('message') message : string) {
-        const usr = await this.userService.getMe(user);
-        return { usr, message }
+        return await this.userService.getMe(user, message);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
@@ -33,7 +32,7 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin', 'user', 'companyAdmin')
-    @Post('updateMe')
+    @Post('me')
     async updateMe(@GetUser() user: User, @Body() dto: UpdateDto,  @Res() res: Response){
         await this.userService.updateMe(user, dto)
         return await res.redirect('/user/me');

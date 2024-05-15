@@ -121,20 +121,26 @@ export class CompanyController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('companyAdmin')
-    @Get(':id/admin/:idCategory/createProduct')
+    @Get(':id/admin/:idCategory/createProduct/:message?')
     @Render('pages/admin/createProduct')
-    async getCreateProduct(@Param() param: any)
+    async getCreateProduct(@Req() request: Request, @Param() param: any)
     {
-        return this.companyService.getCategoryCurrentAndAll(Number(param.id), Number(param.idCategory));
+        let url = request.url;
+        if (url.endsWith('?'))
+            url = url.slice(0, -1);
+        return this.companyService.getCategoryCurrentAndAll(Number(param.id), Number(param.idCategory), param.message, url);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('companyAdmin')
-    @Get(':id/admin/:idCategory/updateProduct/:idProduct')
+    @Get(':id/admin/:idCategory/updateProduct/:idProduct/:message?')
     @Render('pages/admin/updateProduct')
-    async getUpdateProduct(@Param() param: any)
+    async getUpdateProduct(@Req() request: Request, @Param() param: any)
     {
-        return this.companyService.getCategoryCurrentAndAllAndProduct(Number(param.id), Number(param.idCategory), Number(param.idProduct));
+        let url = request.url;
+        if (url.endsWith('?'))
+            url = url.slice(0, -1);
+        return this.companyService.getCategoryCurrentAndAllAndProduct(Number(param.id), Number(param.idCategory), Number(param.idProduct), param.message, url);
     }
 
     @Get(":id/getProduct/:productId")
@@ -205,7 +211,7 @@ export class CompanyController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('companyAdmin')
-    @Post(':id/admin/:categoryId/createProduct')
+    @Post(':id/admin/:categoryId/createProduct/:message?')
     async createProduct(@Param() param: any, @Body() dto: ProductDto, @Res() res: Response)
     {
         await this.companyService.createProduct(Number(param.categoryId), dto);
@@ -214,7 +220,7 @@ export class CompanyController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('companyAdmin')
-    @Post(':id/admin/:categoryId/updateProduct/:productId')
+    @Post(':id/admin/:categoryId/updateProduct/:productId/:message?')
     async updateProduct(@Param() param: any, @Body() dto: ProductDto, @Res() res: Response)
     {
         await this.companyService.updateProduct(Number(param.productId), dto);

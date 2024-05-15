@@ -9,7 +9,7 @@
             color: #724caf;
         } 
         .compItem{
-            width: 200px;height: 230px;position: absolute;
+            width: 200px;position: absolute;
         }
         .compItem:hover{
             cursor: pointer;
@@ -90,7 +90,7 @@
             <div style="display: flex;flex-direction: row;flex-wrap: wrap;margin-bottom: 5px;">
             <% item.Product.forEach(function(prod) { %>
                 <!-- МОДАЛЬНОЕ ОКНО -->
-                <div id="modDialog" class="modal fade" style="display: none; justify-content: center; align-items: center;text-align: -webkit-center;" >
+                <div id="modDialog1" class="modal fade" style="display: none; justify-content: center; align-items: center;text-align: -webkit-center;" >
                     <div id="dialogContent" class="modal-dialog"></div>
                     <div class="modal-content" style="width: 80%;">
                         <div class="modal-header" style="display: flex;justify-content: flex-end;height: 30px;">
@@ -111,7 +111,7 @@
                                         </div>
                                     </div>
                                     <div style="display: flex;flex-direction: column;align-items: flex-start;">
-                                        <a style="color: black;font-weight: 500;font-size: 18px;">Состав:</a>
+                                        <a style="color: black;font-weight: 500;font-size: 18px;">Описание:</a>
                                         <a style="color: black;font-weight: 400;font-size: 16px;text-align: left;" id="Mdesc">#</a>
                                         <a style="color: black;font-weight: 500;font-size: 18px;">Аллергены:</a>
                                         <a style="color: black;font-weight: 400;font-size: 16px;" id="Mallerg">#</a>
@@ -163,7 +163,7 @@
                 e.preventDefault();
                 $.get(this.href, async function (data) {
                     $('#dialogContent').html(data);
-                    $('#modDialog').modal('show');
+                    $('#modDialog1').modal('show');
                     await fillModalWithData(data.product);
                 });
             });
@@ -177,8 +177,8 @@
             document.getElementById('Mdesc').textContent = product.Description;
             document.getElementById('Mallerg').textContent = product.allergenString;
         };
-        $('#modDialog').on('click', '.close', function() {
-            $('#modDialog').modal('hide');
+        $('#modDialog1').on('click', '.close', function() {
+            $('#modDialog1').modal('hide');
         });
     </script>
 </body>

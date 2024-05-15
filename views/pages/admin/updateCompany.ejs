@@ -7,6 +7,7 @@
 </head>
 <%- include('../../partials/header.ejs') %>
 <body>
+  <div class="container">
       <form action="/company/updateCompany/<%= company.IDCompany %>" method="post">
       <div class="container">
         <h1>Изменить компанию</h1>
@@ -24,6 +25,7 @@
       </div>
       <button type="submit" class="registerbtn">Изменить</button>
       </form>
+    </div>
 </body>
 <%- include('../../partials/footer.ejs') %>
 </html>

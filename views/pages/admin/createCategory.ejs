@@ -7,18 +7,19 @@
 </head>
 <%- include('../../partials/header.ejs') %>
 <body>
-
-    <form action="createCategory" method="post">
     <div class="container">
-    <h1>Создать категорию</h1>
-    <hr>
+        <form action="createCategory" method="post">
+        <div class="container">
+        <h1>Создать категорию</h1>
+        <hr>
 
-    <label for="name"><b>Название</b></label>
-    <input type="text" placeholder="Закуски" name="name" required>
+        <label for="name"><b>Название</b></label>
+        <input type="text" placeholder="Закуски" name="name" required>
 
+        </div>
+        <button type="submit" class="registerbtn">Создать</button>
+        </form>
     </div>
-    <button type="submit" class="registerbtn">Создать</button>
-    </form>
 </body>
 <%- include('../../partials/footer.ejs') %>
 </html>
